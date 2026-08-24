@@ -24,6 +24,10 @@ export interface EventSoundOptions {
 }
 
 const THROTTLE_MS = 1500
+// After an error the session goes idle immediately, which would play the
+// "done" cue right after the "error" cue. Suppress idle cues shortly after
+// an error cue.
+const IDLE_SUPPRESS_AFTER_ERROR_MS = 5000
 
 const DEFAULT_PHRASES: Record<EventSoundEvent, string> = {
   "session.idle": "다 됐다",
@@ -48,12 +52,19 @@ export const EventSoundPlugin: Plugin = async (_input, options?: EventSoundOptio
   const phrases = { ...DEFAULT_PHRASES, ...options?.phrases }
   const argv = ttsArgv(options?.voice)
   const lastPlayed = new Map<string, number>()
+  let lastErrorAt = 0
 
   return {
     event: async ({ event }) => {
+      const now = Date.now()
+      if (event.type === "session.error") lastErrorAt = now
+      if (
+        event.type === "session.idle" &&
+        now - lastErrorAt < IDLE_SUPPRESS_AFTER_ERROR_MS
+      )
+        return
       const phrase = phrases[event.type as EventSoundEvent]
       if (!phrase || !argv) return
-      const now = Date.now()
       if (now - (lastPlayed.get(event.type) ?? 0) < THROTTLE_MS) return
       lastPlayed.set(event.type, now)
       try {
