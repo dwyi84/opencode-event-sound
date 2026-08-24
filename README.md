@@ -11,9 +11,11 @@ Add the plugin to your opencode config (`~/.config/opencode/opencode.json`):
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": [["opencode-event-sound"]]
+  "plugin": [["opencode-event-sound", {}]]
 }
 ```
+
+> Note: the options object is required by the config schema even when empty.
 
 Restart opencode. That's it — on macOS it speaks with your **Default Voice** (System Settings > Accessibility > Spoken Content).
 
