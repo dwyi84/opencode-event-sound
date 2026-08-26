@@ -3,6 +3,7 @@ import type { Plugin } from "@opencode-ai/plugin"
 export type EventSoundEvent =
   | "session.idle"
   | "session.error"
+  | "permission.asked"
   | "permission.updated"
 
 /**
@@ -32,6 +33,7 @@ const IDLE_SUPPRESS_AFTER_ERROR_MS = 5000
 const DEFAULT_PHRASES: Record<EventSoundEvent, string> = {
   "session.idle": "다 됐다",
   "session.error": "뻑났다",
+  "permission.asked": "승인 좀",
   "permission.updated": "승인 좀",
 }
 
@@ -49,7 +51,22 @@ function ttsArgv(voice?: string): string[] | null {
 }
 
 export const EventSoundPlugin: Plugin = async (_input, options?: EventSoundOptions) => {
-  const phrases = { ...DEFAULT_PHRASES, ...options?.phrases }
+  // opencode renamed the permission event in ~1.18.x:
+  //   old: permission.updated (properties.type)
+  //   new: permission.asked   (properties.permission, title moved to metadata)
+  // Only one of the two names fires per opencode version, so both keys share
+  // the same phrase; whichever the running version emits gets spoken.
+  const configured = options?.phrases ?? {}
+  const permissionPhrase =
+    configured["permission.asked"] ??
+    configured["permission.updated"] ??
+    DEFAULT_PHRASES["permission.asked"]
+  const phrases: Record<EventSoundEvent, string> = {
+    ...DEFAULT_PHRASES,
+    ...configured,
+    "permission.asked": permissionPhrase,
+    "permission.updated": permissionPhrase,
+  }
   const argv = ttsArgv(options?.voice)
   const lastPlayed = new Map<string, number>()
   let lastErrorAt = 0

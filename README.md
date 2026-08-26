@@ -33,7 +33,7 @@ Pass options via the tuple form:
         "phrases": {
           "session.idle": "작업 끝!",
           "session.error": "에러 났어",
-          "permission.updated": "확인해줘"
+          "permission.asked": "확인해줘"
         }
       }
     ]
@@ -51,8 +51,10 @@ Pass options via the tuple form:
 | Event                 | Fires when                        | Default phrase |
 | --------------------- | --------------------------------- | -------------- |
 | `session.idle`        | The agent finished its response   | `다 됐다`       |
-| `session.error`       | The session hit an error          | `뻑났다`       |
-| `permission.updated`  | Permission approval is requested  | `승인 좀`       |
+| `session.error`       | The session hit an error          | `뻑났다`        |
+| `permission.asked`    | Permission approval is requested  | `승인 좀`       |
+
+> opencode renamed the permission event around v1.18: `permission.updated` (old) → `permission.asked` (new). Both names are supported — configure either one and it applies to whichever your running version emits. A completion cue is also suppressed for 5s after an error, since the session goes idle right after failing.
 
 Duplicate cues for the same event within 1.5s are throttled to avoid spam.
 
