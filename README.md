@@ -1,5 +1,9 @@
 # opencode-event-sound
 
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![opencode plugin](https://img.shields.io/badge/opencode-plugin-000000?style=flat-square&logo=opencode&logoColor=white)
+![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
+
 Speak sound cues through your OS text-to-speech engine when [opencode](https://opencode.ai) sessions go idle, error out, or request permission.
 
 > 세션 완료·에러·승인 요청 시 OS 음성(TTS)으로 소리로 알려주는 opencode 플러그인입니다. 기본 대사는 한국어이며 자유롭게 바꿀 수 있습니다.
