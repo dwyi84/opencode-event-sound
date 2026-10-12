@@ -10,29 +10,35 @@ Speak sound cues through your OS text-to-speech engine when [opencode](https://o
 
 ## Install
 
-Add the plugin to your opencode config (`~/.config/opencode/opencode.json`):
+On OpenCode v2 (opencode2), add the plugin to your opencode config (`~/.config/opencode/opencode.jsonc`) using the `plugins` array:
 
-```json
+```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": [["opencode-event-sound", {}]]
+  "plugins": [{ "package": "opencode-event-sound", "options": {} }]
 }
 ```
 
-> Note: the options object is required by the config schema even when empty.
+Or install it as a global package plugin:
+
+```sh
+opencode plugin add opencode-event-sound
+```
 
 Restart opencode. That's it — on macOS it speaks with your **Default Voice** (System Settings > Accessibility > Spoken Content).
 
+> On OpenCode v1, use the `plugin` key with tuple form instead: `"plugin": [["opencode-event-sound", {}]]`. The same package supports both v1 and v2 (v1 object entrypoints require opencode `1.18.29`+).
+
 ## Options
 
-Pass options via the tuple form:
+Pass options via the object form on v2:
 
-```json
+```jsonc
 {
-  "plugin": [
-    [
-      "opencode-event-sound",
-      {
+  "plugins": [
+    {
+      "package": "opencode-event-sound",
+      "options": {
         "voice": "Jian (Premium)",
         "phrases": {
           "session.idle": "작업 끝!",
@@ -40,10 +46,12 @@ Pass options via the tuple form:
           "permission.asked": "확인해줘"
         }
       }
-    ]
+    }
   ]
 }
 ```
+
+> On v1 the equivalent is the tuple form: `"plugin": [["opencode-event-sound", { ... }]]`.
 
 | Option    | Type                  | Default                                        | Description                                                                 |
 | --------- | --------------------- | ---------------------------------------------- | --------------------------------------------------------------------------- |
